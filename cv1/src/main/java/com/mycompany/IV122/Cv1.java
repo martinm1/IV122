@@ -153,7 +153,7 @@ public class Cv1 {
         do{
             int firstBefore = first;
             first = second;
-            second = firstBefore + second + euclid(first, second);
+            second = firstBefore + second + euclid(firstBefore, second);
         } while (second < 1000000);
         System.out.println("5 : cislo: " + second);
     }
