@@ -243,23 +243,173 @@ public class Cv2 {
         return (4.0*success/total);
     }
     
+    public static BigDecimal ApproximatePowerBisection(double number, double exponent, int numberOfIterations, int exponentPrecision){
+        int wholeExponent = (int) Math.floor(exponent);
+        
+        
+        double exponentMultipliedBy = Math.floor(myPower(new BigDecimal(10), exponentPrecision).doubleValue());
+        
+        int restOfExponent = (int) Math.floor( exponentMultipliedBy * (exponent - (double) wholeExponent));
+        
+        int exponentMultipliedByInt = ((int) exponentMultipliedBy);
+        
+        
+        BigDecimal multiplier = ApproximateNthRootBisection(
+                    myPower(new BigDecimal(number), restOfExponent),
+                    exponentMultipliedByInt, 
+                    numberOfIterations
+                    );
+        
+        
+        return myPower(new BigDecimal(number), wholeExponent).multiply(multiplier);
+    }
+    
+    public static BigDecimal ApproximatePowerRandom(double number, double exponent, int numberOfIterations, int exponentPrecision){
+        int wholeExponent = (int) Math.floor(exponent);
+        
+        
+        double exponentMultipliedBy = Math.floor(myPower(new BigDecimal(10), exponentPrecision).doubleValue());
+        
+        int restOfExponent = (int) Math.floor( exponentMultipliedBy * (exponent - (double) wholeExponent));
+        
+        int exponentMultipliedByInt = ((int) exponentMultipliedBy);
+        
+        
+        BigDecimal multiplier = ApproximateNthRootRandom(
+                    myPower(new BigDecimal(number), restOfExponent),
+                    exponentMultipliedByInt, 
+                    numberOfIterations
+                    );
+        
+        
+        return myPower(new BigDecimal(number), wholeExponent).multiply(multiplier);
+    }
+    
+    public static BigDecimal ApproximateNthRootBisection(BigDecimal number, int n, int numberOfIterations){
+        BigDecimal lowerBound = new BigDecimal(0);
+        BigDecimal upperBound = number;
+        
+        for(int i = 0; i < numberOfIterations; i++){
+            BigDecimal sum = lowerBound.add(upperBound);
+            BigDecimal average = sum.divide(new BigDecimal(2));
+            
+            if(myPower(average, n).compareTo(number) > 0){
+                upperBound = average;
+            }
+            else{
+                lowerBound = average;
+            }
+        }
+        
+        BigDecimal sum = lowerBound.add(upperBound);
+        BigDecimal average = sum.divide(new BigDecimal(2));
+        
+        return average;
+    }
+    
+    public static BigDecimal ApproximateNthRootRandom(BigDecimal number, int n, int numberOfIterations){
+        BigDecimal lowerBound = new BigDecimal(0);
+        BigDecimal upperBound = number;
+        
+        
+        Random rand = new Random();
+            double a = rand.nextDouble();
+        
+        for(int i = 0; i < numberOfIterations; i++){
+            BigDecimal sum = lowerBound.add(upperBound);
+            double random = lowerBound.doubleValue() + rand.nextDouble()*(upperBound.doubleValue() - lowerBound.doubleValue());
+            BigDecimal nextRandom = new BigDecimal(random);
+            
+            if(myPower(nextRandom, n).compareTo(number) > 0){
+                upperBound = nextRandom;
+            }
+            else{
+                lowerBound = nextRandom;
+            }
+        }
+        
+        BigDecimal sum = lowerBound.add(upperBound);
+        BigDecimal average = sum.divide(new BigDecimal(2));
+        
+        return average;
+    }
+    
+    public static BigDecimal myPower(BigDecimal number, int power){
+        BigDecimal result = new BigDecimal(1);
+        if(power == 0 ) return new BigDecimal(0);
+        for(int i = 0; i < power; i++){
+            result = result.multiply(number);
+        }
+        return result;
+    }
+    
+    public static int myModulo(int a, int b){
+        double a1 = (double) a;
+        double b1 = (double) b;
+        
+        double x = a1/b1;
+        
+        x = x - Math.floor(x);
+        double result = Math.floor(x*b1+0.1);
+        
+        return ((int) result);
+    }
+    
+    public static int euclid(int smaller, int larger){
+        if(smaller > larger){
+            int r = smaller;
+            smaller = larger;
+            larger = r;
+        }
+        while(smaller != 0){
+            int r = myModulo(larger, smaller);
+            larger = smaller;
+            smaller = r;
+        }
+        
+        return larger;
+    }
+    
+    public static boolean isPrime(int number){
+        if(number == 0 || number == 1){
+            return false;
+        }
+        
+        boolean prime = true;
+        
+        for (int i = 2; i<=Math.sqrt(number); i++){
+            if (number % i == 0){
+                prime = false;
+            }
+        }
+        
+        return prime;
+    }
+    
     public static void main(String [] args){
         ArrayList list = new ArrayList();
         list.add('A');
         list.add('B');
         list.add('C');
         //list.add('D');
-        /*
+        
         System.out.println("pernutace: "+ permutations(list, new ArrayList()));
         System.out.println("variace: "+ variations(list, new ArrayList(), 2));
         System.out.println("variace s opakovanim: "+ variationsWithRepetition(list, new ArrayList(), 2));
         System.out.println("kombinace: "+ combinations(list, new ArrayList(), 2));
         System.out.println("kombinace s opakovanim: : "+ combinationsWithRepetition(list, new ArrayList(), 2));
         pascalTriangle(500, 5);
-        */
+        
         
         System.out.println(piGregoryLeibniz(600));
         System.out.println(piArchimedes(600));
         System.out.println(piMonteCarlo(6000000));
+        
+        
+        System.out.println(ApproximatePowerBisection(3.69, 4.7, 30, 1));
+        System.out.println(ApproximatePowerRandom(3.69, 4.7, 30, 1));
+        System.out.println(Math.pow(3.69, 4.7));
+        
+
     }
 }
