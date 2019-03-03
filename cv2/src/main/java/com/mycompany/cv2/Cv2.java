@@ -10,6 +10,7 @@ import ij.io.FileSaver;
 import ij.process.ColorProcessor;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
@@ -199,6 +200,48 @@ public class Cv2 {
         fs.saveAsPng("pascalTriangle.png");
     }
     
+    public static double piGregoryLeibniz(int numberOfIteratons){
+        double pi = 0.0;
+        
+        for(int k = 0; k <= numberOfIteratons-1; k++){
+            pi += ((double)(4*Math.pow((-1), k)))
+                   /((double)(2*k +1));
+        }
+        
+        return pi;
+    }
+    
+    
+    public static double piArchimedes(int numberOfIteratons){
+        double a = 2.0*Math.sqrt(3);
+        double b = 3.0;
+        
+        for(int i = 0; i < numberOfIteratons; i++){
+            a=2*a*b/(a+b);
+            b=Math.sqrt(a*b);
+        }
+        
+        return a;
+    }
+    
+    public static double piMonteCarlo(int numberOfIteratons){
+        double total = 0;
+        double success = 0;
+        
+        Random rand = new Random();
+        
+        for(int i = 0; i < numberOfIteratons; i++){
+            double a = rand.nextDouble();
+            double b = rand.nextDouble();
+            
+            total+=1.0;
+            if(1 > a*a+b*b){
+                success+=1.0;
+            }
+        }
+        
+        return (4.0*success/total);
+    }
     
     public static void main(String [] args){
         ArrayList list = new ArrayList();
@@ -206,11 +249,17 @@ public class Cv2 {
         list.add('B');
         list.add('C');
         //list.add('D');
+        /*
         System.out.println("pernutace: "+ permutations(list, new ArrayList()));
         System.out.println("variace: "+ variations(list, new ArrayList(), 2));
         System.out.println("variace s opakovanim: "+ variationsWithRepetition(list, new ArrayList(), 2));
         System.out.println("kombinace: "+ combinations(list, new ArrayList(), 2));
         System.out.println("kombinace s opakovanim: : "+ combinationsWithRepetition(list, new ArrayList(), 2));
         pascalTriangle(500, 5);
+        */
+        
+        System.out.println(piGregoryLeibniz(600));
+        System.out.println(piArchimedes(600));
+        System.out.println(piMonteCarlo(6000000));
     }
 }
