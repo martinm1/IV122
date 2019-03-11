@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>BAAbsolutive</h1>
+
+<svg width="500" height="500">
+  <line x1="250.0" y1="250.0" x2="340.0" y2="250.0" style="stroke:rgb(0,0,0);stroke-width:1"/>
+  <line x1="340.0" y1="250.0" x2="267.18847050625476" y2="302.9006727063226" style="stroke:rgb(0,0,0);stroke-width:1"/>
+  <line x1="267.18847050625476" y1="302.9006727063226" x2="295.0" y2="217.30558623975878" style="stroke:rgb(0,0,0);stroke-width:1"/>
+  <line x1="295.0" y1="217.30558623975878" x2="322.8115294937453" y2="302.9006727063226" style="stroke:rgb(0,0,0);stroke-width:1"/>
+  <line x1="322.8115294937453" y1="302.9006727063226" x2="250.0" y2="250.00000000000006" style="stroke:rgb(0,0,0);stroke-width:1"/>
+  <line x1="250.0" y1="250.00000000000006" x2="295.0" y2="217.30558623975878" style="stroke:rgb(0,0,0);stroke-width:1"/>
+  <line x1="295.0" y1="217.30558623975878" x2="340.0" y2="250.0" style="stroke:rgb(0,0,0);stroke-width:1"/>
+  <line x1="340.0" y1="250.0" x2="322.8115294937453" y2="302.9006727063226" style="stroke:rgb(0,0,0);stroke-width:1"/>
+  <line x1="322.8115294937453" y1="302.9006727063226" x2="267.18847050625476" y2="302.90067270632267" style="stroke:rgb(0,0,0);stroke-width:1"/>
+  <line x1="267.18847050625476" y1="302.90067270632267" x2="250.0" y2="250.00000000000009" style="stroke:rgb(0,0,0);stroke-width:1"/>
+</svg> 
+
+</body>
+</html>
