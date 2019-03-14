@@ -215,25 +215,254 @@ public class Cv3 {
         svg.save();
     }
     
-    public static void BEAbsolutive(double radius){
+    public static void turtleDrawNGon(Turtle turtle, double n, double step){
+        double angle = (180 - ((n-2)*180/n)) *2*Math.PI/360;
+        for(int i = 0; i< n; i++){
+            turtle.forward(step);
+            turtle.left(angle);
+        }
+    }
+    
+    public static void BERelative(double radius, double numberOfLeaves){
         int size = 500;
-        SVG svg = new SVG(size, size, "BEAbsolutive");
+        SVG svg = new SVG(size, size, "BERelative");
         
-        double centerX = size/2;
-        double centerY = size/2;
+        //double centerX = size/2;
+        //double centerY = size/2;
         
-        double i = radius;
-        double angle = 15;
-        //for(double i = radius; i > 0; i-=10){
-            for(int j = 0; j < 12; j++){
-                svg.line(centerX + i*Math.cos(angle* 2*Math.PI/360), centerY + i*Math.sin(angle* 2*Math.PI/360), 
-                     centerX + i*Math.cos((angle+30)* 2*Math.PI/360), centerY + i*Math.sin((angle+30)* 2*Math.PI/360), 
-                    0, 0, 0);
-                angle+=30;
+        //double i = radius;
+        
+        double ngonAngle = (360/(2*numberOfLeaves)) *2*Math.PI/360;
+        double angle = (360/numberOfLeaves)*2*Math.PI/360;
+        
+        Turtle turtle = new Turtle();
+        turtle.initTurtle(size/2, size/2, 0, svg);
+        turtle.pendown();
+        
+        for(int leaf = 0; leaf < numberOfLeaves; leaf ++){
+            turtleDrawNGon(turtle, numberOfLeaves, radius*Math.sin(ngonAngle));
+            turtle.left(angle);
+        }
+        
+        svg.save();
+    }
+    
+    public static void C1(SVG svg, Turtle turtle, int numberOfIterations, double step){
+        
+        boolean save = false;
+        if(turtle == null|| svg == null){
+            int size = 500;
+            svg = new SVG(size, size, "C1");
+            turtle = new Turtle();
+            turtle.initTurtle(size/2, size/2 +200, 0, svg);
+            turtle.left(90* 2*Math.PI/360);
+            turtle.pendown();
+            save = true;
+        }
+        turtle.forward(step);
+        
+        if(numberOfIterations > 0){
+            turtle.left(45* 2*Math.PI/360);
+            C1(svg, turtle, numberOfIterations - 1, step/2);
             
-            }
+            turtle.right(45* 2*Math.PI/360);
+            turtle.right(45* 2*Math.PI/360);
+            C1(svg, turtle, numberOfIterations - 1, step/2);
+            
+            turtle.left(45* 2*Math.PI/360);
+        }
+        turtle.forward(-step);
         
-        //}
+        if(save) svg.save();
+    }
+    
+    public static void kochSide(SVG svg, Turtle turtle, int numberOfIterations, double step){
+        
+        
+        if(numberOfIterations == 0){
+            turtle.forward(step);
+        }
+        else{
+            kochSide(svg, turtle, numberOfIterations - 1, step/3);
+            turtle.left(60* 2*Math.PI/360);
+            kochSide(svg, turtle, numberOfIterations - 1, step/3);
+            turtle.right(120* 2*Math.PI/360);
+            kochSide(svg, turtle, numberOfIterations - 1, step/3);
+            turtle.left(60* 2*Math.PI/360);
+            kochSide(svg, turtle, numberOfIterations - 1, step/3);
+            
+        }
+        
+        
+    }
+    
+    public static void C2Koch(int numberOfIterations, double step){
+        int size = 500;
+        SVG svg = new SVG(size, size, "C2Koch");
+        Turtle turtle = new Turtle();
+        turtle.initTurtle(size/2, size/2, 0, svg);
+        turtle.pendown();
+        
+        kochSide(svg, turtle, numberOfIterations, step);
+        turtle.right(120* 2*Math.PI/360);
+        kochSide(svg, turtle, numberOfIterations, step);
+        turtle.right(120* 2*Math.PI/360);
+        kochSide(svg, turtle, numberOfIterations, step);
+        
+        svg.save();
+    }
+    
+    public static void triangleIteration(SVG svg, Turtle turtle, int numberOfIterations, double step){
+        if(numberOfIterations == 0){
+            for(int i = 0; i < 3; i++){
+                turtle.forward(step);
+                turtle.left(120* 2*Math.PI/360);
+            }
+        }
+        else{
+            triangleIteration(svg, turtle, numberOfIterations - 1, step/2);
+            
+            turtle.penup();
+            turtle.forward(step/2);
+            turtle.pendown();
+            
+            triangleIteration(svg, turtle, numberOfIterations - 1, step/2);
+            
+            turtle.left(120* 2*Math.PI/360);
+            turtle.penup();
+            turtle.forward(step/2);
+            turtle.pendown();
+            turtle.right(120* 2*Math.PI/360);
+            
+            triangleIteration(svg, turtle, numberOfIterations - 1, step/2);
+            
+            turtle.right(120* 2*Math.PI/360);
+            turtle.forward(step/2);
+            
+            turtle.left(120* 2*Math.PI/360);
+        }
+    
+    }
+    
+    public static void C3SierpinskiTriangle(int numberOfIterations, double step){
+        int size = 500;
+        SVG svg = new SVG(size, size, "C3SierpinskiTriangle");
+        Turtle turtle = new Turtle();
+        turtle.initTurtle(size/2, size/2, 0, svg);
+        turtle.pendown();
+        
+        triangleIteration(svg, turtle, numberOfIterations, step);
+        
+        svg.save();
+    }
+    
+    public static void snowFlakeIteration(SVG svg, Turtle turtle, int numberOfIterations, double step){
+        double angle = (180 - ((5-2)*180/5)) *2*Math.PI/360;
+        if(numberOfIterations == 0){
+            
+            
+            turtle.penup();
+            turtle.forward(step);
+            turtle.left(angle);
+            turtle.forward(step);
+            
+            turtle.left(angle);
+            turtle.forward(step);
+            
+            turtle.right(angle);
+            turtle.forward(step);
+            turtle.right(angle);
+            turtle.pendown();
+            
+            turtle.penup();
+            turtle.forward(step); //central 5gon
+            turtle.left(180*2*Math.PI/360);//central 5gon
+            turtle.pendown();
+            turtleDrawNGon(turtle, 5, step);//central 5gon
+            turtle.penup();
+            turtle.left(180*2*Math.PI/360);//central 5gon
+            turtle.forward(-step);//central 5gon
+            turtle.pendown();
+            
+            for(int i = 0; i < 5; i++){
+                turtleDrawNGon(turtle, 5, step);
+
+                turtle.penup();
+                turtle.forward(step);
+                turtle.right(angle);
+                turtle.pendown();
+            }
+            
+            turtle.penup();
+            turtle.right(-angle);
+            turtle.forward(-step);
+            turtle.right(-angle);
+            turtle.forward(-step);
+            turtle.left(-angle);
+            turtle.forward(-step);
+            turtle.left(-angle);
+            turtle.forward(-step);
+            turtle.pendown();
+        }
+        else{
+            double goldenRatio = (Math.sqrt(5.5) + 1.0) / 2.0;
+            
+            double updatedStep = step/(goldenRatio+1);
+            
+            turtle.penup();
+            turtle.forward(step);
+            turtle.left(angle);
+            turtle.forward(step);
+            
+            turtle.left(angle);
+            turtle.forward(step);
+            
+            turtle.right(angle);
+            turtle.forward(step);
+            turtle.right(angle);
+            turtle.pendown();
+            
+            turtle.penup();
+            turtle.forward(step); //central 5gon
+            turtle.left(180*2*Math.PI/360);//central 5gon
+            turtle.pendown();
+            snowFlakeIteration(svg, turtle, numberOfIterations -1, updatedStep);//central 5gon
+            turtle.penup();
+            turtle.left(180*2*Math.PI/360);//central 5gon
+            turtle.forward(-step);//central 5gon
+            turtle.pendown();
+            
+            for(int i = 0; i < 5; i++){
+                snowFlakeIteration(svg, turtle, numberOfIterations -1, updatedStep);
+
+                turtle.penup();
+                turtle.forward(step);
+                turtle.right(angle);
+                turtle.pendown();
+            }
+            
+            turtle.penup();
+            turtle.right(-angle);
+            turtle.forward(-step);
+            turtle.right(-angle);
+            turtle.forward(-step);
+            turtle.left(-angle);
+            turtle.forward(-step);
+            turtle.left(-angle);
+            turtle.forward(-step);
+            turtle.pendown();
+        }
+    
+    }
+    
+    public static void C4SnowFlake(int numberOfIterations, double step){
+        int size = 500;
+        SVG svg = new SVG(size, size, "C4SnowFlake");
+        Turtle turtle = new Turtle();
+        turtle.initTurtle(size/2 - 120, size/2 + 200, 0, svg);
+        turtle.pendown();
+        
+        snowFlakeIteration(svg, turtle, numberOfIterations, step);
         
         svg.save();
     }
@@ -247,6 +476,10 @@ public class Cv3 {
         BBAbsolutive(16);
         BCAbsolutive(200, 10);
         BDAbsolutive(101, 10);
-        BEAbsolutive(100); //NENI HOTOVE
+        BERelative(100, 12);
+        C1(null, null, 10, 200);
+        C2Koch(5, 200);
+        C3SierpinskiTriangle(5, 200);
+        C4SnowFlake(2, 100);
     }
 }
