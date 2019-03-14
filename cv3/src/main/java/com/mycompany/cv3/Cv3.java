@@ -467,8 +467,132 @@ public class Cv3 {
         svg.save();
     }
     
+    public static void D1(int radius, double step, int number){
+        int size = 500;
+        SVG svg = new SVG(size, size, "D1");
+        Turtle turtle = new Turtle();
+        turtle.initTurtle(size/2, size/2, 0, svg);
+        turtle.pendown();
+        
+        
+        for(int i = 0; i < number; i++){
+            turtle.forward(radius);
+            turtle.right(30 *2*Math.PI/360);
+            turtleDrawNGon(turtle, 3, step);
+            turtle.right(-30 *2*Math.PI/360);
+            turtle.penup();
+            turtle.forward(-radius);
+            turtle.pendown();
+            
+            turtle.right(360/number *2*Math.PI/360);
+        }
+        
+        svg.save();
+    }
+    
+    public static void D2(SVG svg, Turtle turtle, double step, int numberOfIterations){
+        boolean save = false;
+        
+        if(svg == null || turtle == null){
+            int size = 500;
+            svg = new SVG(size, size, "D2");
+            turtle = new Turtle();
+            turtle.initTurtle(size/2 - 200, size/2 +200, 0, svg);
+            turtle.pendown();
+            save = true;
+        }
+        
+        if(numberOfIterations == 0){
+            turtleDrawNGon(turtle, 4, step);
+        }
+        else{
+            double smallerStep = step/3;
+            turtleDrawNGon(turtle, 4, step);
+            D2(svg, turtle, smallerStep, numberOfIterations - 1);
+            
+            turtle.forward(step-smallerStep);
+            D2(svg, turtle, smallerStep, numberOfIterations - 1);
+            
+            turtle.forward(smallerStep);
+            turtle.left(90 *2*Math.PI/360);
+            turtle.forward(step-smallerStep);
+            turtle.right(90 *2*Math.PI/360);
+            turtle.forward(-smallerStep);
+            D2(svg, turtle, smallerStep, numberOfIterations - 1);
+            turtle.penup();
+            turtle.forward(smallerStep-step);
+            turtle.pendown();
+            D2(svg, turtle, smallerStep, numberOfIterations - 1);
+            
+            
+            turtle.left(90 *2*Math.PI/360);
+            turtle.forward(-smallerStep);
+            turtle.right(90 *2*Math.PI/360);
+            
+            
+            double evenSmallerStep = smallerStep/6;
+            turtle.penup();
+            turtle.forward(smallerStep + evenSmallerStep);
+            turtle.left(90 *2*Math.PI/360);
+            turtle.forward(evenSmallerStep);
+            turtle.right(90 *2*Math.PI/360);
+            
+            turtle.pendown();
+            D2(svg, turtle, 4*smallerStep/6, numberOfIterations - 1);
+            turtle.penup();
+            
+            turtle.left(90 *2*Math.PI/360);
+            turtle.forward(-evenSmallerStep);
+            turtle.right(90 *2*Math.PI/360);
+            
+            turtle.forward(-smallerStep - evenSmallerStep);
+            
+            turtle.left(90 *2*Math.PI/360);
+            turtle.forward(2*smallerStep-step);
+            turtle.right(90 *2*Math.PI/360);
+            turtle.pendown();
+        }
+        
+        if(save) svg.save();
+    }
+    
+    public static void turtleDrawNgonFromCenter(Turtle turtle, int n, double radius){
+        double innerAngle = 360/n *2*Math.PI/360;
+        
+        double step = 2*radius*Math.sin(innerAngle/2);
+        
+        turtle.penup();
+        turtle.forward(radius);
+        turtle.pendown();
+        
+        turtle.left(Math.PI - (Math.PI-innerAngle)/2);
+        
+        turtleDrawNGon(turtle, n, step);
+        
+        turtle.right(Math.PI - (Math.PI-innerAngle)/2);
+        
+        turtle.penup();
+        turtle.forward(-radius);
+        turtle.pendown();
+    }
+    
+    public static void D3(int radius, int n){
+        int size = 500;
+        SVG svg = new SVG(size, size, "D3");
+        Turtle turtle = new Turtle();
+        turtle.initTurtle(size/2, size/2, 0, svg);
+        turtle.pendown();
+        
+        for(int i = n; i > 3; i-=5){
+            turtleDrawNgonFromCenter(turtle, i, radius*i/n);
+        }
+        
+        svg.save();
+    }
+    
     public static void main(String [] args)
     {
+        
         A1(90);
         A2(90);
         BARelative(90);
@@ -481,5 +605,9 @@ public class Cv3 {
         C2Koch(5, 200);
         C3SierpinskiTriangle(5, 200);
         C4SnowFlake(2, 100);
+        
+        D1(100, 50, 8);
+        D2(null, null, 400, 4);
+        D3(200,40);
     }
 }
