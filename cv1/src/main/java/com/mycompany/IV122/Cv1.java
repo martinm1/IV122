@@ -45,7 +45,7 @@ public class Cv1 {
         
         System.out.println("1 : cislo s nejvetsim poctem delitelu: " + number);
         System.out.println("1 : pocet delitelu toho cisla: " + maxNumOfDivisors);
-        System.out.println("1 : je jednoznacny: " + unambiguous);
+        System.out.println("1 : cislo je jednoznacne: " + unambiguous);
     }
     
     public static boolean canBeDecomposed(int i){
