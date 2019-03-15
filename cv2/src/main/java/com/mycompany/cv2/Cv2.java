@@ -9,6 +9,8 @@ import ij.ImagePlus;
 import ij.io.FileSaver;
 import ij.process.ColorProcessor;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -164,9 +166,9 @@ public class Cv2 {
         {
             for (int y = 0; y < h; y++)
             {
-                System.out.print(" "+field[x][y]+" ");
+                //System.out.print(" "+field[x][y]+" ");
             }
-            System.out.print("\n");
+            //System.out.print("\n");
         }
         
         ColorProcessor ip = new ColorProcessor(w, h);
@@ -386,6 +388,37 @@ public class Cv2 {
         return prime;
     }
     
+    public static double SeriesApproximatePower(double number, double exponent, int numberOfIterations, int numberOfLogarithmIterations, MathContext mc){
+        BigDecimal result = new BigDecimal(0);
+        
+        BigDecimal newExponent = (new BigDecimal(1)).multiply(new BigDecimal(exponent)).multiply(myLogarithm(number, numberOfLogarithmIterations, mc));
+        
+        for(int k = 0; k < numberOfIterations; k++){
+            BigDecimal part = new BigDecimal(1);
+            for(int i = 0; i < k; i++) part = part.multiply(newExponent);
+            
+            result = result.add(part.divide(myFactorial(k), mc));
+        }
+        return result.doubleValue();
+    }
+    
+    public static BigDecimal myLogarithm(double number, int numberOfIterations, MathContext mc){
+        BigDecimal result = new BigDecimal(0);
+        for(int k = 0; k < numberOfIterations; k++){
+            BigDecimal part = new BigDecimal(1);
+            for(int i = 0; i < 2*k+1; i++) part = part.multiply(new BigDecimal(number-1).divide(new BigDecimal(number+1), mc));
+            
+            result = result.add((new BigDecimal(2.0)).multiply(part).divide(new BigDecimal(2*k+1), mc));
+        }
+        return result;
+    }
+    
+    public static BigDecimal myFactorial(int k){
+        BigDecimal result = new BigDecimal(1);
+        for(int i = 1; i <=k; i++) result = result.multiply(new BigDecimal(i));
+        return result;
+    }
+    
     public static void main(String [] args){
         ArrayList list = new ArrayList();
         list.add('A');
@@ -408,6 +441,10 @@ public class Cv2 {
         
         System.out.println(ApproximatePowerBisection(3.69, 4.7, 30, 1));
         System.out.println(ApproximatePowerRandom(3.69, 4.7, 30, 1));
+        
+        MathContext mc = new MathContext(20, RoundingMode.HALF_UP);
+        System.out.println(SeriesApproximatePower(3.69, 4.7, 100, 500, mc));
+
         System.out.println(Math.pow(3.69, 4.7));
         
 
