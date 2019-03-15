@@ -39,6 +39,9 @@ public class Cv1 {
                 if (numOfDivisorsOfI == maxNumOfDivisors){
                     unambiguous = false;
                 }
+                if (numOfDivisorsOfI > maxNumOfDivisors){
+                    unambiguous = true;
+                }
                 maxNumOfDivisors = numOfDivisorsOfI;
             }
         }
