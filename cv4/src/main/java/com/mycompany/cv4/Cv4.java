@@ -75,7 +75,7 @@ public class Cv4 {
             }
         }
         ImagePlus img = new ImagePlus("image", ip);
-        img.show();
+        //img.show();
         FileSaver fs = new FileSaver(img);
         fs.saveAsPng("DiskImplicit.png");
     }
@@ -114,7 +114,7 @@ public class Cv4 {
             }
         }
         ImagePlus img = new ImagePlus("image", ip);
-        img.show();
+        //img.show();
         FileSaver fs = new FileSaver(img);
         fs.saveAsPng("CircleImplicit.png");
     }
@@ -157,7 +157,7 @@ public class Cv4 {
         
         
         ImagePlus img = new ImagePlus("image", ip);
-        img.show();
+        //img.show();
         FileSaver fs = new FileSaver(img);
         fs.saveAsPng("CircleParametric.png");
     }
@@ -203,7 +203,7 @@ public class Cv4 {
         
         
         ImagePlus img = new ImagePlus("image", ip);
-        img.show();
+        //img.show();
         FileSaver fs = new FileSaver(img);
         fs.saveAsPng("SpiralParametric.png");
     }
@@ -249,18 +249,18 @@ public class Cv4 {
             }
         }
         ImagePlus img = new ImagePlus("image", ip);
-        img.show();
+        //img.show();
         FileSaver fs = new FileSaver(img);
-        fs.saveAsPng("CircleImplicit.png");
+        fs.saveAsPng("TriangleImplicit.png");
     }
     
     public static void main(String [] args)
     {
         //bitmap();
-        //DiskImplicit(100);
-        //CircleImplicit(100);
-        //CircleParametric(100, 0.01);
-        //SpiralParametric(0.01, 10*Math.PI);
+        DiskImplicit(100);
+        CircleImplicit(100);
+        CircleParametric(100, 0.01);
+        SpiralParametric(0.01, 10*Math.PI);
         TriangleImplicit(200);
         
     }
