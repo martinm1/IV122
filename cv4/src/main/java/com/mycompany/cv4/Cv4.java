@@ -198,6 +198,10 @@ public class Cv4 {
             int x = centerX + (int) Math.floor(radius*Math.cos(i)+0.5);
             int y = centerY + (int) Math.floor(radius*Math.sin(i)+0.5);
             
+            pixelRGBinner[0] = (int) (255*(x)/(w));
+            pixelRGBinner[2] = (int) (255*(y)/(w));
+            pixelRGBinner[1] = (int) (255*(w - x)/(w));
+            
             ip.putPixel(x, y, pixelRGBinner);
         }
         
@@ -260,7 +264,7 @@ public class Cv4 {
         DiskImplicit(100);
         CircleImplicit(100);
         CircleParametric(100, 0.01);
-        SpiralParametric(0.01, 10*Math.PI);
+        SpiralParametric(0.001, 50*Math.PI);
         TriangleImplicit(200);
         
     }
