@@ -259,7 +259,7 @@ public class Cv4 {
         fs.saveAsPng("TriangleImplicit.png");
     }
     
-        public static void ellipseImplicit(double distance){
+    public static void ellipseImplicit(double distance){
         int w = 500;
         int h = 500;
         
