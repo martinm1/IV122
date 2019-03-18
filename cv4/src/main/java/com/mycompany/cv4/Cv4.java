@@ -444,7 +444,83 @@ public class Cv4 {
         fs.saveAsPng("B.png");
         
     }
+    
+    public static void C1Chess(int step, double radius1, double radius2){
+        int w = 500;
+        int h = 500;
+        int centerX = 250;
+        int centerY = 250;
         
+        ColorProcessor ip = new ColorProcessor(w, h);
+        
+        int[] pixelRGB = new int[3];
+        pixelRGB[0] = 255;
+        pixelRGB[1] = 255;
+        pixelRGB[2] = 255;
+        
+        int[] pixelRGBinner = new int[3];
+        
+        pixelRGBinner[0] = 0;
+        pixelRGBinner[1] = 0;
+        pixelRGBinner[2] = 0;
+        
+        for (int x = 0; x < w; x++)
+        {
+            for (int y = 0; y < h; y++)
+            {
+                double distance = Math.sqrt((x-centerX)*(x-centerX) + (y-centerY)*(y-centerY));
+                if((int) Math.floor(x / step + y / step) % 2 == 0)
+                    if(distance > radius1 || distance < radius2)
+                        ip.putPixel(x, y, pixelRGBinner);
+                    else
+                        ip.putPixel(x, y, pixelRGB);
+                else
+                    if(distance > radius1 || distance < radius2)
+                        ip.putPixel(x, y, pixelRGB);
+                    else
+                        ip.putPixel(x, y, pixelRGBinner);
+            }
+        }
+        ImagePlus img = new ImagePlus("image", ip);
+        //img.show();
+        FileSaver fs = new FileSaver(img);
+        fs.saveAsPng("C1Chess.png");
+    }
+      
+    public static void C2Circles(double ratio, int limit){
+        int w = 500;
+        int h = 500;
+        int centerX = 250;
+        int centerY = 250;
+        
+        ColorProcessor ip = new ColorProcessor(w, h);
+        
+        int[] pixelRGB = new int[3];
+        pixelRGB[0] = 0;
+        pixelRGB[1] = 0;
+        pixelRGB[2] = 0;
+        
+        for (int x = 0; x < w; x++)
+        {
+            for (int y = 0; y < h; y++)
+            {
+                double distance = Math.sqrt((x-centerX)*(x-centerX) + (y-centerY)*(y-centerY));
+                int color = (int) ((1+Math.sin(ratio*distance))*127);
+                if(x > limit && x < w - limit && y > limit && y < h - limit) {
+                    color = 255 - color;
+                }
+                pixelRGB[0] = color;
+                pixelRGB[1] = color;
+                pixelRGB[2] = color;
+                ip.putPixel(x, y, pixelRGB);
+            }
+        }
+        ImagePlus img = new ImagePlus("image", ip);
+        //img.show();
+        FileSaver fs = new FileSaver(img);
+        fs.saveAsPng("C2Circles.png");
+    }
+    
     public static void main(String [] args)
     {
         //bitmap();
@@ -455,5 +531,7 @@ public class Cv4 {
         TriangleImplicit(200);
         ellipseImplicit(200);
         B();
+        C1Chess(50, 200, 100);
+        C2Circles(0.1, 100);
     }
 }
