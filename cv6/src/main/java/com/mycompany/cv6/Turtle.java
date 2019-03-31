@@ -5,6 +5,8 @@
  */
 package com.mycompany.cv6;
 
+import java.util.Stack;
+
 /**
  *
  * @author xmejzli2
@@ -15,6 +17,7 @@ public class Turtle {
     double angle;
     boolean pen = false;
     SVG svg;
+    Stack stack;
     
     
     public void initTurtle(double positionX, double positionY, double angle, SVG svg){
@@ -22,6 +25,7 @@ public class Turtle {
         this.positionY = positionY;
         this.angle = angle;
         this.svg = svg;
+        this.stack = new Stack();
     }
     
     public void forward(double step){
@@ -58,5 +62,17 @@ public class Turtle {
 
     public double getPositionY() {
         return positionY;
+    }
+    
+    public void push(){
+        double[] state = new double[]{positionX, positionY, angle};
+        stack.push(state);
+    }
+    
+    public void pop(){
+        double[] state = (double[]) stack.pop();
+        positionX = state[0];
+        positionY = state[1];
+        angle = state[2];
     }
 }
