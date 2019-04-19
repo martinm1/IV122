@@ -51,14 +51,9 @@ public class MyMatrixUtils {
         double a = angle * 2*Math.PI/360;
         return new double[][]{
             {Math.cos(a), -Math.sin(a), 0}, 
-            {Math.sin(a),  Math.cos(a), 0}, 
-            {0,           0,            1}
+            {Math.sin(a), Math.cos(a) , 0}, 
+            {0,           0           , 1}
         };
-    }
-    
-    public static double[][] rotate(double[][] A, double angle){
-        double[][] B = rotation(angle);
-        return multiplyMatrices(A,B);
     }
     
     public static double[][] translation(double[] t){
@@ -69,22 +64,20 @@ public class MyMatrixUtils {
         };
     }
     
-    public static double[][] translate(double[][] A, double[] t){
-        double[][] B = translation(t);
-        return multiplyMatrices(A,B);
-    }
-    
     public static double[][] scaling(double[] s){
         return new double[][]{
-            {s[0], 0, 0}, 
-            {0, s[1], 0}, 
-            {0, 0, 1   }
+            {s[0], 0   , 0}, 
+            {0   , s[1], 0}, 
+            {0   , 0   , 1}
         };
     }
     
-    public static double[][] scale(double[][] A, double[] s){
-        double[][] B = scaling(s);
-        return multiplyMatrices(A,B);
+    public static double[][] shear(double k){
+        return new double[][]{
+            {1, k, 0}, 
+            {0, 1, 0}, 
+            {0, 0, 1}
+        };
     }
     
     public static double[][] combine(double[][][] transformations){
