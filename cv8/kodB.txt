@@ -1,0 +1,77 @@
+    public static void B(double side, int numOfIterations, String name, double[][] matrix1, double[][] matrix2, double[][] matrix3, double[][] matrix4){
+        int size = 1000;
+        SVG svg = new SVG(size, size, name);
+        
+        double centerX = 500.0;
+        double centerY = 500.0;
+        
+        MyMatrixUtils myutils = new MyMatrixUtils();
+        
+
+        
+        double[][][] image0 = triangle(side);
+        ArrayList<double[][][]> images = new ArrayList();
+        images.add(image0);
+        
+        ArrayList<double[][][]> newimages = new ArrayList();
+        
+        for(int i = 0; i < numOfIterations; i++){
+            
+            for(double[][][] image: images){
+                double[][][] image1 = transformPoints(matrix1, image);
+                double[][][] image2 = transformPoints(matrix2, image);
+                double[][][] image3 = transformPoints(matrix3, image);
+                double[][][] image4 = transformPoints(matrix4, image);
+                
+                newimages.add(image1);
+                newimages.add(image2);
+                newimages.add(image3);
+                newimages.add(image4);
+            }
+            images = newimages;
+            newimages = new ArrayList();
+            
+        }
+        
+        for(double[][][] image: images){
+            svg = drawNgon(svg, image, centerX, centerY);
+        }
+        
+        svg.save();
+    }
+
+    public static void main(String [] args){
+        A1(50, 11);
+        A2(100, 16);
+        
+        BSierpinski(400,6);
+        BSierpinskiRelative(400,6);
+        
+        
+        double[][] matrix1 = new double[][]{
+            {0.255, 0      , 0.3726},
+            {0    , 0.255  , 0.6714},
+            {0,     0      , 1     }
+        };
+        
+        
+        double[][] matrix2 = new double[][]{
+            {0.255, 0      , 0.1146},
+            {0    , 0.255  , 0.2232},
+            {0,     0      , 1     }
+        };
+        
+        double[][] matrix3 = new double[][]{
+            {0.255, 0      , 0.6306},
+            {0    , 0.255  , 0.2232},
+            {0,     0      , 1     }
+        };
+        
+        double[][] matrix4 = new double[][]{
+            {0.255, 0      , 0.6356 },
+            {0    , 0.255  , -0.0061},
+            {0,     0      , 1      }
+        };
+        
+        B(400, 1, "BFern", matrix1,matrix2,matrix3,matrix4);
+    }
