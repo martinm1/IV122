@@ -1,0 +1,1 @@
+plot "choice1n100k2000.txt" using 1:2 with lines

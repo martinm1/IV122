@@ -5,7 +5,10 @@
  */
 package com.mycompany.cv9;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Random;
@@ -207,6 +210,81 @@ public class Cv9 {
         return dice2;
     }
     
+    
+    public static void C(int n, int k, int choice, int numOfColumns){
+        Random rand = new Random();
+        
+        double[] sum = new double[k];
+        double[] averages = new double[k];
+        
+        for(int i = 0; i < k; i++){
+            sum[i] = 0;
+            
+            if(choice == 1){
+                for(int j = 0; j < n; j++){
+                    sum[i] += DiceATry();
+                }
+            }
+            if(choice == 2){
+                for(int j = 0; j < n; j++){
+                    int randomChoice = rand.nextInt(2);
+                    if(randomChoice == 0){
+                        sum[i] += DiceATry();
+                    }
+                    if(randomChoice == 1){
+                        sum[i] += DiceBTry();
+                    }
+                }
+            }
+            if(choice == 3){
+                int randomChoice = rand.nextInt(2);
+                for(int j = 0; j < n; j++){
+                    if(randomChoice == 0){
+                        sum[i] += DiceATry();
+                    }
+                    if(randomChoice == 1){
+                        sum[i] += DiceBTry();
+                    }
+                }
+            }
+            
+            averages[i] = sum[i]/(double)n;
+        }
+        
+        double[] graphAxis = new double[numOfColumns];
+        int[] graphValues = new int[numOfColumns];
+        double step = 7.0/(double) numOfColumns;
+        
+        
+        for(int i = 0; i < graphAxis.length; i++){
+            graphAxis[i] = i*step;
+        }
+        
+        for(int i = 0; i < graphValues.length; i++){
+            graphValues[i] = 0;
+            for(int j = 0; j < averages.length; j++){
+                if(averages[j] > graphAxis[Math.max(0, i-1)]
+                && averages[j] < graphAxis[i]){
+                    graphValues[i]++;
+                }
+            }
+        }
+        
+        //System.out.println("choice" + choice + "n" + n + "k" + k);
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(new String("choice" + choice + "n" + n + "k" + k + ".txt"), "UTF-8");
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+            Logger.getLogger(Cv9.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        for(int i = 0; i < graphAxis.length; i++){
+            //System.out.println(String.format("%.2f", graphAxis[i])+"   " + graphValues[i]);
+            writer.println(String.format("%.2f", graphAxis[i])+"   " + graphValues[i]);
+        }
+        writer.close();
+    }
+    
     public static void main(String [] args){
         //System.out.println("aaa");
         AMontyHall(10000);
@@ -217,7 +295,9 @@ public class Cv9 {
         System.out.println(BRandomNumbers("random5.txt"));
         System.out.println(BRandomNumbers("random6.txt"));
         System.out.println(BRandomNumbers("random7.txt"));
-        
+        C(1000,2000,1, 140);
+        C(1000,2000,2, 140);
+        C(1000,2000,3, 140);
         
     }
 }
