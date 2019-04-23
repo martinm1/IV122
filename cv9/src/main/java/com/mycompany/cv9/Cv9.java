@@ -285,9 +285,56 @@ public class Cv9 {
         writer.close();
     }
     
+    public static void DDicesSimulation(int n, int x, int numberOfChoices){
+        Random rand = new Random();
+        
+        int sixesDice = rand.nextInt(n);
+        
+        int numberOfxSixes = 0;
+        int correct = 0;
+        
+        for(int i = 0; i < numberOfChoices; i++){
+            int dice = rand.nextInt(n);
+            
+            int[] throwDice = new int[x];
+            boolean allSix = true;
+            
+            for(int j = 0; j < x; j++){
+                throwDice[j] = rand.nextInt(6);
+            }
+            
+            for(int j = 0; j < x; j++){
+                if(throwDice[j] != 5) allSix = false;
+            }
+            
+            if(allSix){
+                numberOfxSixes++;
+                if(dice != sixesDice){
+                    correct++;
+                }
+            }
+        }
+        
+        double result = (double)correct /(double)numberOfxSixes;
+        System.out.println("DDicesSimulation:" + result);
+    }
+    
+    public static void DDicesBayes(double n, double x){
+        double oneSixProb = 1.0/6.0;
+        
+        double xSixProb = Math.pow(oneSixProb, x);
+        
+        double cubeOkProb = (n-1)/n;
+        double cubeNotOkProb = 1.0/n;
+        
+        double result = (xSixProb*cubeOkProb)/(xSixProb*cubeOkProb + xSixProb*cubeNotOkProb);
+        
+        System.out.println("DDicesBayes:" + result);
+    }
+    
     public static void main(String [] args){
-        //System.out.println("aaa");
         AMontyHall(10000);
+        
         System.out.println(BRandomNumbers("random1.txt"));
         System.out.println(BRandomNumbers("random2.txt"));
         System.out.println(BRandomNumbers("random3.txt"));
@@ -295,9 +342,13 @@ public class Cv9 {
         System.out.println(BRandomNumbers("random5.txt"));
         System.out.println(BRandomNumbers("random6.txt"));
         System.out.println(BRandomNumbers("random7.txt"));
+        
         C(1000,2000,1, 140);
         C(1000,2000,2, 140);
         C(1000,2000,3, 140);
+        
+        DDicesSimulation(5, 2, 10000000);
+        DDicesBayes(5, 2);
         
     }
 }
