@@ -8,8 +8,13 @@ package com.mycompany.cv11;
 import ij.ImagePlus;
 import ij.io.FileSaver;
 import ij.process.ColorProcessor;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -64,7 +69,7 @@ public class Cv11 {
         return sum;
     }
     
-    public static void ALinearRegression(double a, double b, int n, double sigma, int size, double step){
+    public static void ALinearRegression(double a, double b, int n, double sigma, int size, double step, boolean generate){
         
         int w = size;
         int h = size;
@@ -89,10 +94,48 @@ public class Cv11 {
         pixel2RGB[1] = 0;
         pixel2RGB[2] = 0;
         
-        //generate data
-        double[] pointsX = generatePointsX(n, size);
-        double[] pointsY = generatePointsYLine(a, b, pointsX, sigma);
+        double[] pointsX;
+        double[] pointsY;
         
+        if(generate){
+            //generate data
+            pointsX = generatePointsX(n, size);
+            pointsY = generatePointsYLine(a, b, pointsX, sigma);
+        }
+        else{
+            int numberOfLines = 0;
+            
+            try(BufferedReader br = new BufferedReader(new FileReader("linreg.txt"))) {
+                
+                String line = br.readLine();
+                while (line != null) {
+                    numberOfLines++;
+                    line = br.readLine();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Cv11.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            pointsX = new double[numberOfLines];
+            pointsY = new double[numberOfLines];
+            
+            try(BufferedReader br = new BufferedReader(new FileReader("linreg.txt"))) {
+                
+                int i = 0;
+                String line = br.readLine();
+                while (line != null) {
+                    pointsX[i] = Double.valueOf(line.split(" ")[0]);
+                    pointsY[i] = Double.valueOf(line.split(" ")[1]);
+                    
+                    pointsX[i] = pointsX[i]*50.0 + 200.0;
+                    pointsY[i] = pointsY[i]*50.0 + 200.0;
+                    i++;
+                    line = br.readLine();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Cv11.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         
         //draw data
         for (int x = 0; x < w; x++)
@@ -103,14 +146,15 @@ public class Cv11 {
             }
         }
         
-        for(int i = 0; i < n; i++){
+        for(int i = 0; i < pointsX.length; i++){
             if(pointsX[i] >= 0 && pointsX[i] < size && pointsY[i] >= 0 && pointsY[i] < size){
                 ip.putPixel((int) Math.floor(pointsX[i]),(int) Math.floor(pointsY[i]), pixel1RGB);
             }
         }
         
-        ip = drawLine(ip, a, -1.0, b, 1.0, pixel2RGB);
-        
+        if(generate){
+            ip = drawLine(ip, a, -1.0, b, 1.0, pixel2RGB);
+        }
         //grid search
         
         double bestSSE = Double.MAX_VALUE;
@@ -130,11 +174,20 @@ public class Cv11 {
         //draw result
         ip = drawLine(ip, opta, -1.0, optb, 1.0, pixel1RGB);
         
-        //save
-        ImagePlus img = new ImagePlus("image", ip);
-        //img.show();
-        FileSaver fs = new FileSaver(img);
-        fs.saveAsPng("ALinearRegression.png");
+        if(generate){
+            //save
+            ImagePlus img = new ImagePlus("image", ip);
+            //img.show();
+            FileSaver fs = new FileSaver(img);
+            fs.saveAsPng("ALinearRegression.png");
+        }
+        else{
+            //save
+            ImagePlus img = new ImagePlus("image", ip);
+            //img.show();
+            FileSaver fs = new FileSaver(img);
+            fs.saveAsPng("LoadALinearRegression.png");
+        }
     }
     
     
@@ -183,7 +236,7 @@ public class Cv11 {
         return pointsY;
     }
     
-    public static void BClusterDetection(int k, int nForCluster, int size, double sigma, int numOfIterations){
+    public static void BClusterDetection(int k, int nForCluster, int size, double sigma, int numOfIterations, boolean generate){
         int w = size;
         int h = size;
         
@@ -201,11 +254,49 @@ public class Cv11 {
         pixel1RGB[1] = 0;
         pixel1RGB[2] = 0;
         
-        
-        //generate data
-        double[][] clusterCenters = generateClusterCenters(k, size, 3*sigma);
-        double[] pointsX = generatePointsXOfClusters(nForCluster, clusterCenters, sigma);
-        double[] pointsY = generatePointsYOfClusters(nForCluster, clusterCenters, sigma);
+        double[][] clusterCenters = null;
+        double[] pointsX;
+        double[] pointsY;
+        if(generate){
+            //generate data
+            clusterCenters = generateClusterCenters(k, size, 3*sigma);
+            pointsX = generatePointsXOfClusters(nForCluster, clusterCenters, sigma);
+            pointsY = generatePointsYOfClusters(nForCluster, clusterCenters, sigma);
+        }
+        else{
+            int numberOfLines = 0;
+            
+            try(BufferedReader br = new BufferedReader(new FileReader("faithful.txt"))) {
+                
+                String line = br.readLine();
+                while (line != null) {
+                    numberOfLines++;
+                    line = br.readLine();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Cv11.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            pointsX = new double[numberOfLines];
+            pointsY = new double[numberOfLines];
+            
+            try(BufferedReader br = new BufferedReader(new FileReader("faithful.txt"))) {
+                
+                int i = 0;
+                String line = br.readLine();
+                while (line != null) {
+                    pointsX[i] = Double.valueOf(line.split(" ")[0]);
+                    pointsY[i] = Double.valueOf(line.split(" ")[1]);
+                    
+                    pointsX[i] = pointsX[i]*80.0 + 50.0;
+                    pointsY[i] = pointsY[i]*5.0 +  50.0;
+                    i++;
+                    line = br.readLine();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Cv11.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         
         //detect clusters
         double[][] newClusterCenters = generateClusterCenters(k, size, 3*sigma);
@@ -238,10 +329,12 @@ public class Cv11 {
                 }
             }
             
-            for(int j = 0; j < clusterCenters.length; j++){
-                for(int x = (int) Math.floor(clusterCenters[j][0]) - 2; x < (int) Math.floor(clusterCenters[j][0]) + 2; x++){
-                    for(int y = (int) Math.floor(clusterCenters[j][1]) - 2; y < (int) Math.floor(clusterCenters[j][1]) + 2; y++){
-                        ip.putPixel(x, y, pixel1RGB);
+            if(generate){
+                for(int j = 0; j < clusterCenters.length; j++){
+                    for(int x = (int) Math.floor(clusterCenters[j][0]) - 2; x < (int) Math.floor(clusterCenters[j][0]) + 2; x++){
+                        for(int y = (int) Math.floor(clusterCenters[j][1]) - 2; y < (int) Math.floor(clusterCenters[j][1]) + 2; y++){
+                            ip.putPixel(x, y, pixel1RGB);
+                        }
                     }
                 }
             }
@@ -262,11 +355,20 @@ public class Cv11 {
                 }
             }
             
-            //save
-            ImagePlus img = new ImagePlus("image", ip);
-            //img.show();
-            FileSaver fs = new FileSaver(img);
-            fs.saveAsPng("BClusterDetection"+i+".png");
+            if(generate){
+                //save
+                ImagePlus img = new ImagePlus("image", ip);
+                //img.show();
+                FileSaver fs = new FileSaver(img);
+                fs.saveAsPng("BClusterDetection"+i+".png");
+            }
+            else{
+                //save
+                ImagePlus img = new ImagePlus("image", ip);
+                //img.show();
+                FileSaver fs = new FileSaver(img);
+                fs.saveAsPng("LoadBClusterDetection"+i+".png");
+            }
             
             //move cluster centers
             BigDecimal[][] newCenters = new BigDecimal[k][2];
@@ -310,7 +412,10 @@ public class Cv11 {
     
     public static void main(String [] args)
     {
-        ALinearRegression(1.1, 35.2, 200, 30, 500, 0.3);
-        BClusterDetection(5, 30, 500, 30, 8);
+        //ALinearRegression(1.1, 35.2, 200, 30, 500, 0.3, true);
+        //BClusterDetection(5, 30, 500, 30, 8, true);
+        
+        ALinearRegression(1.1, 35.2, 200, 30, 500, 0.3, false);
+        BClusterDetection(2, 30, 500, 30, 8, false);
     }
 }
