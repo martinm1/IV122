@@ -392,10 +392,10 @@ public class Cv12 {
     public static void main(String [] args)
     {
         
-        //ANumberLabyrinth("bludiste4.txt");
-        //ANumberLabyrinth("bludiste5-1.txt");
-        //ANumberLabyrinth("bludiste5-2.txt");
-        //ANumberLabyrinth("bludiste10.txt");
+        ANumberLabyrinth("bludiste4.txt");
+        ANumberLabyrinth("bludiste5-1.txt");
+        ANumberLabyrinth("bludiste5-2.txt");
+        ANumberLabyrinth("bludiste10.txt");
         
         BDynamite("dynamit.txt");
     }
