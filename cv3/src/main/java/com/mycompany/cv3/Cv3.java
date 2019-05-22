@@ -94,33 +94,26 @@ public class Cv3 {
         double pos1Y = size/2;
         
         double angle = 0;
+        double angleChange = 144* 2*Math.PI/360;
         
-        for(int i = 0; i < 5; i++){ //pentagram
-            double pos2X = pos1X + step*Math.cos(angle); //generating sequence of points
-            double pos2Y = pos1Y + step*Math.sin(angle);
+        for(int i0 = 0; i0< 2; i0++){
             
-            svg.line(pos1X, pos1Y, pos2X, pos2Y, 0, 0, 0);
+            for(int i = 0; i < 5; i++){ //pentagram
+                double pos2X = pos1X + step*Math.cos(angle); //generating sequence of points
+                double pos2Y = pos1Y + step*Math.sin(angle);
+
+                svg.line(pos1X, pos1Y, pos2X, pos2Y, 0, 0, 0);
+
+                pos1X = pos2X;
+                pos1Y = pos2Y;
+
+                angle += angleChange;
+            }
+            angle -= 72* 2*Math.PI/360;
+            angle += 36* 2*Math.PI/360;
             
-            pos1X = pos2X;
-            pos1Y = pos2Y;
-            
-            angle += 144* 2*Math.PI/360;
-        }
-        
-        angle -= 72* 2*Math.PI/360;
-        angle += 36* 2*Math.PI/360;
-        
-        double side = step/(2*Math.cos(36* 2*Math.PI/360));
-        
-        for(int i = 0; i< 5; i++){ //polygon
-            double pos2X = pos1X + side*Math.cos(angle); //generating sequence of points
-            double pos2Y = pos1Y + side*Math.sin(angle);
-            
-            svg.line(pos1X, pos1Y, pos2X, pos2Y, 0, 0, 0);
-            
-            pos1X = pos2X;
-            pos1Y = pos2Y;
-            angle += 72* 2*Math.PI/360;
+            angleChange = 72* 2*Math.PI/360;
+            step = step/(2*Math.cos(36* 2*Math.PI/360));
         }
         
         svg.save();
