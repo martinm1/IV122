@@ -338,7 +338,8 @@ public class Cv1 {
         else return euclidNumOfStepsSubtraction(larger % smaller, smaller) + 1;
     }
     
-    public static void euclidSubtraction(){
+    
+    public static void euclidAll(int type){ //0=subtraction, 1=modulo, 2=combined
         int w = 500;
         int h = 500;
         
@@ -355,92 +356,67 @@ public class Cv1 {
         {
             for (int y = 0; y < h; y++)
             {
-                if(euclidNumOfStepsSubtraction(x,y) < 256){
-                    pixelRGB[0] = euclidNumOfStepsSubtraction(x,y);
+                if(type==0){
+                    if(euclidNumOfStepsSubtraction(x,y) < 256){
+                        pixelRGB[0] = euclidNumOfStepsSubtraction(x,y);
+                    }
+                    else{
+                        pixelRGB[0] = 0;
+                    }
+                    ip.putPixel(x, y, pixelRGB);
                 }
-                else{
-                    pixelRGB[0] = 0;
+                else if (type==1){
+                    if(euclidNumOfStepsModulo(x,y) < 256){
+                        pixelRGB[0] = euclidNumOfStepsModulo(x,y);
+                    }
+                    else{
+                        pixelRGB[0] = 0;
+                    }
+                    ip.putPixel(x, y, pixelRGB);
+                
                 }
-                ip.putPixel(x, y, pixelRGB);
+                else if (type==2){
+                    if(euclidNumOfStepsSubtraction(x,y) < 256){
+                        pixelRGB[0] = euclidNumOfStepsSubtraction(x,y);
+                    }
+                    else{
+                        pixelRGB[0] = 0;
+                    }
+                    if(euclidNumOfStepsModulo(x,y) < 256){
+                        pixelRGB[1] = euclidNumOfStepsModulo(x,y);
+                    }
+                    else{
+                        pixelRGB[1] = 0;
+                    }
+                    ip.putPixel(x, y, pixelRGB);
+                }
             }
         }
         ImagePlus img = new ImagePlus("image", ip);
         //img.show();
         
         FileSaver fs = new FileSaver(img);
-        fs.saveAsPng("euclidSubtraction.png");
+        if(type==0){
+            fs.saveAsPng("euclidSubtraction.png");
+        }
+        else if (type==1){
+            fs.saveAsPng("euclidModulo.png");
+        }
+        else if (type==2){
+            fs.saveAsPng("euclidCombined.png");
+        }
+    }
+    
+    public static void euclidSubtraction(){
+        euclidAll(0);
     }
     
     public static void euclidModulo(){
-        int w = 500;
-        int h = 500;
-        
-        ColorProcessor ip = new ColorProcessor(w, h);
-        
-        
-        int[] pixelRGB = new int[3];
-        
-        pixelRGB[0] = 0;
-        pixelRGB[1] = 0;
-        pixelRGB[2] = 0;
-        
-        for (int x = 0; x < w; x++)
-        {
-            for (int y = 0; y < h; y++)
-            {
-                if(euclidNumOfStepsModulo(x,y) < 256){
-                    pixelRGB[0] = euclidNumOfStepsModulo(x,y);
-                }
-                else{
-                    pixelRGB[0] = 0;
-                }
-                ip.putPixel(x, y, pixelRGB);
-            }
-        }
-        ImagePlus img = new ImagePlus("image", ip);
-        //img.show();
-        
-        FileSaver fs = new FileSaver(img);
-        fs.saveAsPng("euclidModulo.png");
+        euclidAll(1);
     }
     
-        public static void euclidCombined(){
-        int w = 500;
-        int h = 500;
-        
-        ColorProcessor ip = new ColorProcessor(w, h);
-        
-        
-        int[] pixelRGB = new int[3];
-        
-        pixelRGB[0] = 0;
-        pixelRGB[1] = 0;
-        pixelRGB[2] = 0;
-        
-        for (int x = 0; x < w; x++)
-        {
-            for (int y = 0; y < h; y++)
-            {
-                if(euclidNumOfStepsSubtraction(x,y) < 256){
-                    pixelRGB[0] = euclidNumOfStepsSubtraction(x,y);
-                }
-                else{
-                    pixelRGB[0] = 0;
-                }
-                if(euclidNumOfStepsModulo(x,y) < 256){
-                    pixelRGB[1] = euclidNumOfStepsModulo(x,y);
-                }
-                else{
-                    pixelRGB[1] = 0;
-                }
-                ip.putPixel(x, y, pixelRGB);
-            }
-        }
-        ImagePlus img = new ImagePlus("image", ip);
-        //img.show();
-        
-        FileSaver fs = new FileSaver(img);
-        fs.saveAsPng("euclidCombined.png");
+    public static void euclidCombined(){
+        euclidAll(2);
     }
     
     public static void main(String [] args)
