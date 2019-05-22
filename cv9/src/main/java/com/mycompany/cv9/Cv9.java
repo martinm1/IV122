@@ -75,25 +75,13 @@ public class Cv9 {
     public static int[] frequencies(String text){
         
         int[] sums = new int[]{0,0,0,0,0,0};
+        char[] chars = new char[]{'1', '2', '3', '4', '5', '6'};
         
         for(int i = 0; i < text.length(); i++){
-            if(text.charAt(i) == '1'){
-                sums[0]++;
-            }
-            if(text.charAt(i) == '2'){
-                sums[1]++;
-            }
-            if(text.charAt(i) == '3'){
-                sums[2]++;
-            }
-            if(text.charAt(i) == '4'){
-                sums[3]++;
-            }
-            if(text.charAt(i) == '5'){
-                sums[4]++;
-            }
-            if(text.charAt(i) == '6'){
-                sums[5]++;
+            for(int j = 0; j < chars.length; j++){
+                if(text.charAt(i) == chars[j]){
+                    sums[j]++;
+                }
             }
         }
         return sums;
