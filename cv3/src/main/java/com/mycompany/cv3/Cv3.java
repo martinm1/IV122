@@ -460,6 +460,45 @@ public class Cv3 {
         svg.save();
     }
     
+    
+    public static void HilbertIteration(SVG svg, Turtle turtle, int numberOfIterations, double step, double angle){
+        if(numberOfIterations == 1){
+            turtle.forward(step);
+            turtle.left(angle);
+            turtle.forward(step);
+            turtle.left(angle);
+            turtle.forward(step);
+        }
+        else{
+            turtle.left(angle);
+            HilbertIteration(svg, turtle, numberOfIterations-1, step, -angle);
+            turtle.left(angle);
+            turtle.forward(step);
+            HilbertIteration(svg, turtle, numberOfIterations-1, step, angle);
+            turtle.right(angle);
+            turtle.forward(step);
+            turtle.right(angle);
+            HilbertIteration(svg, turtle, numberOfIterations-1, step, angle);
+            turtle.forward(step);
+            turtle.left(angle);
+            HilbertIteration(svg, turtle, numberOfIterations-1, step, -angle);
+            turtle.left(angle);
+        }
+    
+    }
+    
+    public static void C5BonusHilbert(int numberOfIterations, double step){
+        int size = 500;
+        SVG svg = new SVG(size, size, "C5BonusHilbert");
+        Turtle turtle = new Turtle();
+        turtle.initTurtle(size/2 - 120, size/2 + 200, 0, svg);
+        turtle.pendown();
+        
+        HilbertIteration(svg, turtle, numberOfIterations, step, 90*2*Math.PI/360);
+        
+        svg.save();
+    }
+    
     public static void D1(int radius, double step, int number){
         int size = 500;
         SVG svg = new SVG(size, size, "D1");
@@ -602,5 +641,7 @@ public class Cv3 {
         D1(100, 50, 8);
         D2(null, null, 400, 4);
         D3(200,40);
+        
+        C5BonusHilbert(6,5);
     }
 }
