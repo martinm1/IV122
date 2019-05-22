@@ -7,8 +7,11 @@ package com.mycompany.cv4;
 
 import ij.ImagePlus;
 import ij.io.FileSaver;
+import ij.io.Opener;
 import ij.process.ColorProcessor;
+import ij.process.ImageProcessor;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
@@ -521,6 +524,128 @@ public class Cv4 {
         fs.saveAsPng("C2Circles.png");
     }
     
+    
+    public static ImageProcessor openImage(String path){
+        Opener opener = new Opener(); 
+        ImagePlus imp = opener.openImage(path);
+        ImageProcessor ip0 = imp.getProcessor().convertToRGB();
+        
+        return ip0;
+    }
+    
+    public static void DBonusShowHiddenText(String path, int number){
+        
+        ImageProcessor ip0 = openImage(path);
+
+        int w = ip0.getWidth();
+        int h = ip0.getHeight();
+
+        ColorProcessor ip = new ColorProcessor(w, h);
+
+        
+        for (int x = 0; x < w; x++)
+        {
+            for (int y = 0; y < h; y++)
+            {
+                int[] pixelRGB = new int[]{0, 0, 0};
+                ip.putPixel(x, y, pixelRGB);
+                
+                ip0.getPixel(x, y, pixelRGB);
+                
+                
+                int[] pixelRGB1 = new int[]{0, 0, 0};
+                if(x-1 > 0) ip0.getPixel(x - 1, y, pixelRGB1);
+                else ip0.getPixel(x, y, pixelRGB1);
+                
+                
+                int[] pixelRGBres;
+                if(number == 1){
+                    if(pixelRGB[2] > 0){
+                        pixelRGBres = new int[]{255, 255, 255};
+                    }
+                    else{
+                        pixelRGBres = new int[]{0, 0, 0};
+                    }
+                }
+                else if(number == 2){
+                    int value0 = Math.max(30*Math.abs(pixelRGB[0] - pixelRGB1[0]), 0);
+                    int value1 = Math.max(30*Math.abs(pixelRGB[1] - pixelRGB1[1]), 0);
+                    int value2 = Math.max(30*Math.abs(pixelRGB[2] - pixelRGB1[2]), 0);
+                    pixelRGBres = new int[]{value0, value1, value2};
+                }
+                else{
+                    pixelRGBres = new int[]{0, 0, 0};
+                    if(pixelRGB[0]+pixelRGB[1]+pixelRGB[2] == 0 && x  % 2 == 0 && y  % 2 == 0){
+                        pixelRGBres = new int[]{255, 255, 255};
+                    }
+                }
+                
+                ip.putPixel(x, y, pixelRGBres);
+            }
+        }
+        
+        ImagePlus img = new ImagePlus("image", ip);
+        //img.show();
+        FileSaver fs = new FileSaver(img);
+        fs.saveAsPng("skryvacka"+number+"-result.png");
+    }
+    
+    public static void DBonusCreateHiddenText(){
+        ImageProcessor ip0 = openImage("skryvacka-source.png");
+
+        int w = ip0.getWidth();
+        int h = ip0.getHeight();
+
+        ColorProcessor ip = new ColorProcessor(w, h);
+
+        
+        for (int x = 0; x < w; x++)
+        {
+            for (int y = 0; y < h; y++)
+            {
+                int[] pixelRGB = new int[3];
+                
+                ip0.getPixel(x, y, pixelRGB);
+                
+                Random rand = new Random();
+                
+                if(x%2 == 0 && pixelRGB[0]+pixelRGB[1]+pixelRGB[2] == 0){
+                    pixelRGB = new int[]{10*rand.nextInt(25), rand.nextInt(255), rand.nextInt(255)};
+                }
+                if(y%2 == 0 && x%2 == 1 && pixelRGB[0]+pixelRGB[1]+pixelRGB[2] == 0){
+                    pixelRGB = new int[]{rand.nextInt(255), 10*rand.nextInt(25), rand.nextInt(255)};
+                }
+                else{
+                    pixelRGB = new int[]{rand.nextInt(255), rand.nextInt(255), rand.nextInt(255)};
+                }
+                
+                /*//show my hidden text
+                if(x%2 == 0 && x!=0){
+                    if(pixelRGB[0] % 10 == 0){
+                        pixelRGB = new int[]{0, 0, 0};
+                    }
+                    else pixelRGB = new int[]{255, 255, 255};
+                }
+                else if(y%2 == 0 && y!=0){
+                    if(pixelRGB[1] % 10 == 0){
+                        pixelRGB = new int[]{0, 0, 0};
+                    }
+                    else pixelRGB = new int[]{255, 255, 255};
+                }
+                else{
+                    pixelRGB = new int[]{255, 255, 255};
+                }*/
+                
+                ip.putPixel(x, y, pixelRGB);
+            }
+        }
+        
+        ImagePlus img = new ImagePlus("image", ip);
+        //img.show();
+        FileSaver fs = new FileSaver(img);
+        fs.saveAsPng("skryvacka-moje.png");
+    }
+    
     public static void main(String [] args)
     {
         //bitmap();
@@ -533,5 +658,10 @@ public class Cv4 {
         B();
         C1Chess(50, 200, 100);
         C2Circles(0.1, 100);
+        
+        DBonusShowHiddenText("skryvacka1.png", 1);
+        DBonusShowHiddenText("skryvacka2.png", 2);
+        DBonusShowHiddenText("skryvacka3.png", 3);
+        DBonusCreateHiddenText();
     }
 }
