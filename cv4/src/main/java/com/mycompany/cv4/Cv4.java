@@ -619,7 +619,7 @@ public class Cv4 {
                     pixelRGB = new int[]{rand.nextInt(255), rand.nextInt(255), rand.nextInt(255)};
                 }
                 
-                /*//show my hidden text
+                //show my hidden text
                 if(x%2 == 0 && x!=0){
                     if(pixelRGB[0] % 10 == 0){
                         pixelRGB = new int[]{0, 0, 0};
@@ -634,7 +634,7 @@ public class Cv4 {
                 }
                 else{
                     pixelRGB = new int[]{255, 255, 255};
-                }*/
+                }
                 
                 ip.putPixel(x, y, pixelRGB);
             }

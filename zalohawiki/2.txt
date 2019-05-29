@@ -1,0 +1,430 @@
+Odkaz na projekt: https://github.com/martinm1/IV122/tree/master/cv2 
+# A) Generování kombinací, permutací, variací
+### A: Zadání:
+•Vstup: seznam, přirozené číslo k
+•Výstup: výpis všech permutací, k prvkových kombinací (s opakováním), k prvkových variací (s opakováním)
+### A: Kód: Permutace:
+```java
+    public static ArrayList permutations(ArrayList list, ArrayList tupleList){
+        ArrayList finalList = new ArrayList();
+        if(list.isEmpty()) {
+            finalList.add(tupleList);
+        }
+        
+        for(int i = 0; i < list.size(); i++){
+            ArrayList tupleList1 = new ArrayList();
+            tupleList1.addAll(tupleList);
+            tupleList1.add(list.get(i));
+            
+            ArrayList list1 = new ArrayList();
+            list1.addAll(list);
+            list1.remove(i);
+            
+            finalList.addAll(permutations(list1, tupleList1));
+        }
+        return finalList;
+    }
+```
+### A: Kód: Variace:
+```java
+    public static ArrayList variations(ArrayList list, ArrayList tupleList, int k){
+        ArrayList finalList = new ArrayList();
+        if(k==0) {
+            finalList.add(tupleList);
+            return finalList;
+        }
+        
+        for(int i = 0; i < list.size(); i++){
+            ArrayList tupleList1 = new ArrayList();
+            tupleList1.addAll(tupleList);
+            tupleList1.add(list.get(i));
+            
+            ArrayList list1 = new ArrayList();
+            list1.addAll(list);
+            list1.remove(i);
+            
+            finalList.addAll(variations(list1, tupleList1, k-1));
+        }
+        return finalList;
+    }
+```
+### A: Kód: Variace s opakováním:
+```java
+    public static ArrayList variationsWithRepetition(ArrayList list, ArrayList tupleList, int k){
+        ArrayList finalList = new ArrayList();
+        if(k==0) {
+            finalList.add(tupleList);
+            return finalList;
+        }
+        
+        for(int i = 0; i < list.size(); i++){
+            ArrayList tupleList1 = new ArrayList();
+            tupleList1.addAll(tupleList);
+            tupleList1.add(list.get(i));
+            
+            finalList.addAll(variationsWithRepetition(list, tupleList1, k-1));
+        }
+        return finalList;
+    }
+```
+### A: Kód: Kombinace:
+```java
+    public static ArrayList combinations(ArrayList list, ArrayList tupleList, int k){
+        ArrayList finalList = new ArrayList();
+        if(k==0) {
+            finalList.add(tupleList);
+            return finalList;
+        }
+        
+        if(!list.isEmpty()){
+            ArrayList list1 = new ArrayList();
+            list1.addAll(list);
+            list1.remove(0);
+
+            ArrayList tupleList1 = new ArrayList();
+            tupleList1.addAll(tupleList);
+            tupleList1.add(list.get(0));
+
+            ArrayList tupleList2 = new ArrayList();
+            tupleList2.addAll(tupleList);
+
+
+            finalList.addAll(combinations(list1, tupleList1, k-1));
+            finalList.addAll(combinations(list1, tupleList2, k));
+        }
+        
+        return finalList;
+    }
+```
+### A: Kód: Kombinace s opakováním:
+```java
+    public static ArrayList combinationsWithRepetition(ArrayList list, ArrayList tupleList, int k){
+        ArrayList finalList = new ArrayList();
+        if(k==0) {
+            finalList.add(tupleList);
+            return finalList;
+        }
+        
+        if(!list.isEmpty()){
+            ArrayList list1 = new ArrayList();
+            list1.addAll(list);
+            list1.remove(0);
+            
+            for(int i=1;i<=k;i++){
+                ArrayList tupleList1 = new ArrayList();
+                tupleList1.addAll(tupleList);
+                for(int j=0; j<i;j++){
+                    tupleList1.add(list.get(0));
+                }
+                finalList.addAll(combinationsWithRepetition(list1, tupleList1, k-i));
+            }
+
+            ArrayList tupleList2 = new ArrayList();
+            tupleList2.addAll(tupleList);
+            
+            finalList.addAll(combinationsWithRepetition(list1, tupleList2, k));
+        }
+        
+        return finalList;
+    }
+```
+# B) Pascalův trojúhelník
+### B: Zadání:
+Vstup: n, d
+Výstup: Prvních n řádků Pascalova trojúhelníku, přičemž však nevypisujeme přímo čísla, ale znázorňujeme zbytek po dělení d.
+Výstup zpracujte jako obrázek, zkuste najít vstupy, které dávají zajímavý výstup.
+### B: Obrázek:
+Pro pascalTriangle(500, 5):
+https://github.com/martinm1/IV122/blob/master/cv2/pascalTriangle.png \
+![](https://github.com/martinm1/IV122/blob/master/cv2/pascalTriangle.png)
+### B: Kód:
+```java
+    public static void pascalTriangle(int h, int d){
+        if(d>256) d=256;
+        int w = 2*h+1;
+        
+        BigDecimal[][] field = new BigDecimal[w][h];
+        for (int x = 0; x < w; x++)
+        {
+            for (int y = 0; y < h; y++)
+            {
+                field[x][y]=new BigDecimal(0);
+            }
+        }
+        
+        field[w/2][0]=new BigDecimal(1);
+        
+        for (int y = 1; y < h; y++)
+        {
+            for(int x = w/2 - y; x <= w/2 + y; x += 2)
+            {
+                field[x][y] = field[x-1][y-1].add(field[x+1][y-1]);
+            }
+            for(int x = w/2 - y+1; x <= w/2 + y-1; x += 2)
+            {
+                field[x][y] = new BigDecimal(2*d);
+            }
+        }
+     
+        ColorProcessor ip = new ColorProcessor(w, h);
+        
+        
+        int[] pixelRGB = new int[3];
+        
+        pixelRGB[0] = 0;
+        pixelRGB[1] = 0;
+        pixelRGB[2] = 0;
+        
+        for (int x = 0; x < w; x++)
+        {
+            for (int y = 0; y < h; y++)
+            {
+                pixelRGB[0] = 0;
+                
+                pixelRGB[2] = (int)((255/d)*field[x][y].remainder(new BigDecimal(d)).intValue());
+                
+                if(pixelRGB[2] == 0 && !field[x][y].equals(new BigDecimal(2*d)) && x >= w/2 - y && x <= w/2 + y){
+                    pixelRGB[0] = 255;
+                }
+                
+                
+                ip.putPixel(x, y, pixelRGB);
+            }
+        }
+        ImagePlus img = new ImagePlus("image", ip);
+        FileSaver fs = new FileSaver(img);
+        fs.saveAsPng("pascalTriangle.png");
+    }
+```
+# C) Výpočet π
+### C: Zadání:
+Implementujte několik metod pro aproximativní výpočet hodnoty π(minimálně Gregoryho-Leibnizova řada, Archimedova řada, Monte Carlo metoda, ideálně vyhledejte samostatně nějakou další). Experimentálně vyhodnoťte jednotlivé metody, např. jaké přesnosti jsou schopny dosáhnout během 1 vteřiny?
+### C: Kód:
+```java
+    public static double piGregoryLeibniz(int numberOfIteratons){
+        double pi = 0.0;
+        
+        for(int k = 0; k <= numberOfIteratons-1; k++){
+            pi += ((double)(4*Math.pow((-1), k)))
+                   /((double)(2*k +1));
+        }
+        
+        return pi;
+    }
+    
+    
+    public static double piArchimedes(int numberOfIteratons){
+        double a = 2.0*Math.sqrt(3);
+        double b = 3.0;
+        
+        for(int i = 0; i < numberOfIteratons; i++){
+            a=2*a*b/(a+b);
+            b=Math.sqrt(a*b);
+        }
+        
+        return a;
+    }
+    
+    public static double piMonteCarlo(int numberOfIteratons){
+        double total = 0;
+        double success = 0;
+        
+        Random rand = new Random();
+        
+        for(int i = 0; i < numberOfIteratons; i++){
+            double a = rand.nextDouble();
+            double b = rand.nextDouble();
+            
+            total+=1.0;
+            if(1 > a*a+b*b){
+                success+=1.0;
+            }
+        }
+        
+        return (4.0*success/total);
+    }
+```
+# D) Přibližné umocňování
+### D: Zadání:
+Přibližné umocňování: Pouze za použití základních aritmetických operací (+, -, *, /, porovnání) implementujte funkci pro přibližný výpočet x^y (pro kladná, ale ne nutně celá čísla x,y). Zkuste vymyslet a implementoval alespoň dvě rozdílné metody. Vyhodnoťte přesnost implementovaných metod – pro jaké hodnoty x,y dávají uspokojivé výsledky? Liší se jejich rychlost?
+### D: Pomocí náhodného hledání n-té odmocniny:
+Pomalé, dává uspokojivé výsledky pro velké množtví iterací, malá čísla, celočíselné exponenty a exponenty blízké celočíseným.
+### D: Pomocí náhodného hledání n-té odmocniny : Kód:
+```java
+    public static BigDecimal ApproximatePowerRandom(double number, double exponent, int numberOfIterations, int exponentPrecision){
+        int wholeExponent = (int) Math.floor(exponent);
+        
+        
+        double exponentMultipliedBy = Math.floor(myPower(new BigDecimal(10), exponentPrecision).doubleValue());
+        
+        int restOfExponent = (int) Math.floor( exponentMultipliedBy * (exponent - (double) wholeExponent));
+        
+        int exponentMultipliedByInt = ((int) exponentMultipliedBy);
+        
+        
+        BigDecimal multiplier = ApproximateNthRootRandom(
+                    myPower(new BigDecimal(number), restOfExponent),
+                    exponentMultipliedByInt, 
+                    numberOfIterations
+                    );
+        
+        
+        return myPower(new BigDecimal(number), wholeExponent).multiply(multiplier);
+    }
+
+    public static BigDecimal ApproximateNthRootRandom(BigDecimal number, int n, int numberOfIterations){
+        BigDecimal lowerBound = new BigDecimal(0);
+        BigDecimal upperBound = number;
+        
+        
+        Random rand = new Random();
+            double a = rand.nextDouble();
+        
+        for(int i = 0; i < numberOfIterations; i++){
+            BigDecimal sum = lowerBound.add(upperBound);
+            double random = lowerBound.doubleValue() + rand.nextDouble()*(upperBound.doubleValue() - lowerBound.doubleValue());
+            BigDecimal nextRandom = new BigDecimal(random);
+            
+            if(myPower(nextRandom, n).compareTo(number) > 0){
+                upperBound = nextRandom;
+            }
+            else{
+                lowerBound = nextRandom;
+            }
+        }
+        
+        BigDecimal sum = lowerBound.add(upperBound);
+        BigDecimal average = sum.divide(new BigDecimal(2));
+        
+        return average;
+    }
+
+    public static BigDecimal myPower(BigDecimal number, int power){
+        BigDecimal result = new BigDecimal(1);
+        if(power == 0 ) return new BigDecimal(0);
+        for(int i = 0; i < power; i++){
+            result = result.multiply(number);
+        }
+        return result;
+    }
+```
+### D: Pomocí hledání n-té odmocniny půlením intervalu:
+O něco rychlejší, opět dává uspokojivé výsledky pro velké množtví iterací, malá čísla a celočíselné exponenty a exponenty blízké celočíseným.
+### D: Pomocí hledání n-té odmocniny půlením intervalu : Kód:
+```java
+    public static BigDecimal ApproximatePowerBisection(double number, double exponent, int numberOfIterations, int exponentPrecision){
+        int wholeExponent = (int) Math.floor(exponent);
+        
+        
+        double exponentMultipliedBy = Math.floor(myPower(new BigDecimal(10), exponentPrecision).doubleValue());
+        
+        int restOfExponent = (int) Math.floor( exponentMultipliedBy * (exponent - (double) wholeExponent));
+        
+        int exponentMultipliedByInt = ((int) exponentMultipliedBy);
+        
+        
+        BigDecimal multiplier = ApproximateNthRootBisection(
+                    myPower(new BigDecimal(number), restOfExponent),
+                    exponentMultipliedByInt, 
+                    numberOfIterations
+                    );
+        
+        
+        return myPower(new BigDecimal(number), wholeExponent).multiply(multiplier);
+    }
+
+    public static BigDecimal ApproximateNthRootBisection(BigDecimal number, int n, int numberOfIterations){
+        BigDecimal lowerBound = new BigDecimal(0);
+        BigDecimal upperBound = number;
+        
+        for(int i = 0; i < numberOfIterations; i++){
+            BigDecimal sum = lowerBound.add(upperBound);
+            BigDecimal average = sum.divide(new BigDecimal(2));
+            
+            if(myPower(average, n).compareTo(number) > 0){
+                upperBound = average;
+            }
+            else{
+                lowerBound = average;
+            }
+        }
+        
+        BigDecimal sum = lowerBound.add(upperBound);
+        BigDecimal average = sum.divide(new BigDecimal(2));
+        
+        return average;
+    }
+
+    public static BigDecimal myPower(BigDecimal number, int power){
+        BigDecimal result = new BigDecimal(1);
+        if(power == 0 ) return new BigDecimal(0);
+        for(int i = 0; i < power; i++){
+            result = result.multiply(number);
+        }
+        return result;
+    }
+```
+### D: Pomocí sčítání řady e^(y*ln x):
+Poměrně rychlé a přesné. Dává uspokojivé výsledky při velkém množství iterací. 
+### D: Pomocí sčítání řady e^(y*ln x):
+```java
+    public static double SeriesApproximatePower(double number, double exponent, int numberOfIterations, int numberOfLogarithmIterations, MathContext mc){
+        BigDecimal result = new BigDecimal(0);
+        
+        BigDecimal newExponent = (new BigDecimal(1)).multiply(new BigDecimal(exponent)).multiply(myLogarithm(number, numberOfLogarithmIterations, mc));
+        
+        for(int k = 0; k < numberOfIterations; k++){
+            BigDecimal part = new BigDecimal(1);
+            for(int i = 0; i < k; i++) part = part.multiply(newExponent);
+            
+            result = result.add(part.divide(myFactorial(k), mc));
+        }
+        return result.doubleValue();
+    }
+    
+    public static BigDecimal myLogarithm(double number, int numberOfIterations, MathContext mc){
+        BigDecimal result = new BigDecimal(0);
+        for(int k = 0; k < numberOfIterations; k++){
+            BigDecimal part = new BigDecimal(1);
+            for(int i = 0; i < 2*k+1; i++) part = part.multiply(new BigDecimal(number-1).divide(new BigDecimal(number+1), mc));
+            
+            result = result.add((new BigDecimal(2.0)).multiply(part).divide(new BigDecimal(2*k+1), mc));
+        }
+        return result;
+    }
+    
+    public static BigDecimal myFactorial(int k){
+        BigDecimal result = new BigDecimal(1);
+        for(int i = 1; i <=k; i++) result = result.multiply(new BigDecimal(i));
+        return result;
+    }
+```
+# Volání funkcí programu (Metoda main):
+```java
+    public static void main(String [] args){
+        ArrayList list = new ArrayList();
+        list.add('A');
+        list.add('B');
+        list.add('C');
+        //list.add('D');
+        
+        System.out.println("pernutace: "+ permutations(list, new ArrayList()));
+        System.out.println("variace: "+ variations(list, new ArrayList(), 2));
+        System.out.println("variace s opakovanim: "+ variationsWithRepetition(list, new ArrayList(), 2));
+        System.out.println("kombinace: "+ combinations(list, new ArrayList(), 2));
+        System.out.println("kombinace s opakovanim: : "+ combinationsWithRepetition(list, new ArrayList(), 2));
+        pascalTriangle(500, 5);
+        
+        System.out.println(piGregoryLeibniz(600));
+        System.out.println(piArchimedes(600));
+        System.out.println(piMonteCarlo(6000000));
+        
+        System.out.println(ApproximatePowerBisection(3.69, 4.7, 30, 1));
+        System.out.println(ApproximatePowerRandom(3.69, 4.7, 30, 1));
+        
+        MathContext mc = new MathContext(20, RoundingMode.HALF_UP);
+        System.out.println(SeriesApproximatePower(3.69, 4.7, 100, 500, mc));
+
+        System.out.println(Math.pow(3.69, 4.7));
+    }
+```
